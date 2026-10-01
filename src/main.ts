@@ -206,7 +206,6 @@ function boot() {
     post.render();
     perf.frame(realDt * 1000);
     hud.frame(realDt, input.x, input.y, perf.fps, perf.tier);
-    cursor.current?.update(realDt);
     input.lateUpdate(realDt);
   }
 

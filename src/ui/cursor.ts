@@ -1,18 +1,19 @@
 import type { Input } from '../core/input';
-import { T } from '../config/timings';
 
 /**
  * Fine crosshair + lagging box, mix-blend difference; contextual labels via
  * [data-cursor] attributes or direct calls from 3D hovers. Disabled on touch.
+ *
+ * Driven directly by pointermove (NOT the rAF loop) so it also tracks while the
+ * loader sequence runs and while the tab throttles rendering; the box lag is a
+ * CSS transform transition instead of a JS lerp.
  */
 class Cursor {
   private root: HTMLElement;
   private cross: HTMLElement;
   private box: HTMLElement;
   private label: HTMLElement;
-  private bx = window.innerWidth / 2;
-  private by = window.innerHeight / 2;
-  private seen = false;
+  private visible = false;
   enabled = !window.matchMedia('(pointer: coarse)').matches;
 
   constructor(private input: Input) {
@@ -22,30 +23,38 @@ class Cursor {
     this.label = document.getElementById('cursor-label')!;
     if (!this.enabled) {
       this.root.style.display = 'none';
-      document.documentElement.style.cursor = 'auto';
       return;
     }
+    // hide the OS cursor only once the custom one is live
+    document.documentElement.classList.add('custom-cursor');
+
+    window.addEventListener('pointermove', this.onMove, { passive: true });
+    document.documentElement.addEventListener('mouseleave', () => this.show(false));
+    document.documentElement.addEventListener('mouseenter', () => this.show(true));
     window.addEventListener('pointerover', (e) => {
       const t = (e.target as Element | null)?.closest?.('[data-cursor]') as HTMLElement | null;
       this.setHot(!!t, t?.dataset.cursor ?? '');
     });
   }
 
+  private onMove = () => {
+    const { px, py } = this.input;
+    this.show(true);
+    const t = `translate(${px}px, ${py}px) translate(-50%, -50%)`;
+    this.cross.style.transform = t;
+    this.box.style.transform = t;
+  };
+
+  private show(on: boolean) {
+    if (on === this.visible) return;
+    this.visible = on;
+    this.root.classList.toggle('visible', on);
+  }
+
   setHot(on: boolean, label = '') {
     if (!this.enabled) return;
     this.box.classList.toggle('hot', on);
     this.label.textContent = on ? label : '';
-  }
-
-  update(dt: number) {
-    if (!this.enabled) return;
-    const { px, py } = this.input;
-    if (!this.seen && (px || py)) { this.bx = px; this.by = py; this.seen = true; }
-    this.cross.style.transform = `translate(${px}px, ${py}px) translate(-50%,-50%)`;
-    const k = 1 - Math.exp(-dt / T.cursorLerp);
-    this.bx += (px - this.bx) * k;
-    this.by += (py - this.by) * k;
-    this.box.style.transform = `translate(${this.bx}px, ${this.by}px) translate(-50%,-50%)`;
   }
 }
 

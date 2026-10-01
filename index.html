@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>KELVIN ZERO — 零度美术馆</title>
+  <meta name="description" content="A gallery of computed phenomena. 一座陈列「被计算出来的现象」的美术馆。" />
+  <meta name="theme-color" content="#050507" />
+  <meta property="og:title" content="KELVIN ZERO — 零度美术馆" />
+  <meta property="og:description" content="A gallery of computed phenomena. 一座陈列「被计算出来的现象」的美术馆。" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23050507'/%3E%3Ccircle cx='32' cy='30' r='14' fill='none' stroke='%23C8FF2E' stroke-width='3'/%3E%3Ctext x='44' y='16' font-family='monospace' font-size='12' fill='%23ECEAE4'%3E%C2%B0%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+  <a class="skip-link" href="#main">SKIP TO CONTENT / 跳到内容</a>
+
+  <canvas id="gl" aria-hidden="true"></canvas>
+
+  <div id="app">
+    <i class="reg tl" aria-hidden="true"></i><i class="reg tr" aria-hidden="true"></i>
+    <i class="reg bl" aria-hidden="true"></i><i class="reg br" aria-hidden="true"></i>
+
+    <header id="hud-top">
+      <div class="hud-left">
+        <a href="#/" id="brand" data-cursor="ATRIUM" aria-label="KELVIN ZERO 回到中庭">KELVIN&nbsp;ZERO°</a>
+        <span id="brand-sub">零度美术馆</span>
+      </div>
+      <nav class="hud-right" aria-label="全局导航">
+        <button id="btn-index" data-cursor="OPEN" aria-label="打开索引页">INDEX / 索引</button>
+        <button id="btn-sound" data-cursor="TOGGLE" aria-label="开关声音">SOUND OFF</button>
+        <button id="btn-zero" data-cursor="FREEZE" aria-label="切换绝对零度模式">ABSOLUTE ZERO [Z]</button>
+      </nav>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <div id="room-dom"></div>
+      <aside id="info-block" hidden aria-live="polite"></aside>
+      <button id="btn-manifesto" hidden data-cursor="READ" aria-label="打开策展声明">MANIFESTO ↗</button>
+      <div id="hint-overlay" hidden aria-hidden="true"></div>
+    </main>
+
+    <footer id="hud-bottom">
+      <div id="hud-temp" aria-live="off">293.15&nbsp;K</div>
+      <div id="hud-route">SELECT AN EXHIBIT / 选择展品</div>
+      <div id="hud-perf"><span id="perf-fps">-- FPS</span><span id="perf-tier">—</span><span id="perf-xy">X 0.000 Y 0.000</span></div>
+    </footer>
+
+    <div id="marquee" aria-hidden="true"><div class="marquee-track" id="marquee-track"></div></div>
+
+    <section id="panel" hidden aria-label="参数面板"></section>
+    <section id="manifesto" role="dialog" aria-modal="true" aria-label="策展声明" hidden></section>
+    <div id="fx-scan" aria-hidden="true"></div>
+    <div id="fx-grain" aria-hidden="true"></div>
+
+    <div id="loader" role="status">
+      <canvas id="loader-ball" width="180" height="180" aria-hidden="true"></canvas>
+      <pre id="loader-log" aria-live="polite"></pre>
+      <div class="loader-actions" id="loader-actions">
+        <button id="btn-enter" data-cursor="ENTER" aria-label="进入美术馆并开启声音">ENTER GALLERY ↵</button>
+        <button id="btn-enter-silent" data-cursor="ENTER" aria-label="静音进入美术馆">ENTER SILENT</button>
+      </div>
+      <noscript><p class="noscript">KELVIN ZERO 需要启用 JavaScript。</p></noscript>
+    </div>
+
+    <div id="fallback" hidden></div>
+
+    <div id="cursor" aria-hidden="true">
+      <div id="cursor-cross"></div>
+      <div id="cursor-box"><span id="cursor-label"></span></div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

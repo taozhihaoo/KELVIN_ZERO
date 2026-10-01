@@ -17,6 +17,7 @@ export class SceneManager {
   private transition: Transition;
   private fromRoom: Room | null = null;
   private toRoom: Room | null = null;
+  private pendingGo: { id: string; origin: { x: number; y: number } } | null = null;
 
   onSettled: ((id: string) => void) | null = null;   // transition finished, room fully in
   onTransitionStart: ((from: string, to: string) => void) | null = null;
@@ -47,7 +48,11 @@ export class SceneManager {
 
   /** frost-wipe from current room to `id`; origin = uv (0..1, y up) */
   go(id: string, origin: { x: number; y: number }) {
-    if (this.transitioning || !this.rooms.has(id) || this.currentId === id) return;
+    if (!this.rooms.has(id) || this.currentId === id) return;
+    if (this.transitioning) {
+      this.pendingGo = { id, origin }; // chain after the current wipe settles
+      return;
+    }
     const from = this.current;
     const to = this.rooms.get(id)!;
     if (!from) { this.enterImmediate(id); return; }
@@ -68,6 +73,9 @@ export class SceneManager {
       this.fromRoom = null;
       this.toRoom = null;
       this.onSettled?.(id);
+      const pg = this.pendingGo;
+      this.pendingGo = null;
+      if (pg && pg.id !== this.currentId) this.go(pg.id, pg.origin);
     });
   }
 

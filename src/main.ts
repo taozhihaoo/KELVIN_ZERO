@@ -26,6 +26,7 @@ import { createEcho } from './rooms/echo';
 import { createHorizon } from './rooms/horizon';
 import { createIndexPage } from './rooms/indexPage';
 import { roomByKey } from './config/rooms';
+import { initDebugStats } from './core/debug';
 
 const canvas = document.getElementById('gl') as HTMLCanvasElement;
 
@@ -33,6 +34,7 @@ const canvas = document.getElementById('gl') as HTMLCanvasElement;
 const routerShim = { go(hash: string) { location.hash = hash; } };
 
 function boot() {
+  initDebugStats();
   const renderer = createRenderer(canvas);
   const clock = new Clock();
   const input = new Input(canvas);

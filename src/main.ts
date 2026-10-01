@@ -222,6 +222,7 @@ function boot() {
   (window as any).__kz = {
     mgr,
     clock,
+    audio,
     advance(n: number, step = 1 / 60) {
       for (let i = 0; i < n; i++) mgr.update(clock.t += step, step);
     },

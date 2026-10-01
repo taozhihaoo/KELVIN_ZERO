@@ -33,6 +33,14 @@ export class AudioEngine {
   bands: Bands = { bass: 0, mid: 0, high: 0 };
 
   private targetLowpass = 18000;
+  private pendingDelayWet = 0.35;
+
+  /** echo-room delay send amount (0..1) */
+  setDelayWet(v: number) {
+    this.pendingDelayWet = v;
+    if (!this.ctx) return;
+    this.delaySend.gain.setTargetAtTime(v * 0.8, this.ctx.currentTime, 0.1);
+  }
 
   /** build the graph lazily (needs a user gesture) */
   private ensure() {
@@ -53,7 +61,7 @@ export class AudioEngine {
 
     // delay feedback loop for space
     this.delaySend = ctx.createGain();
-    this.delaySend.gain.value = 0.35;
+    this.delaySend.gain.value = this.pendingDelayWet * 0.8;
     this.delayNode = ctx.createDelay(1.5);
     this.delayNode.delayTime.value = 0.42;
     const fb = ctx.createGain();

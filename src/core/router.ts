@@ -28,7 +28,11 @@ export function routeHash(r: Route): string {
 export function routeTitle(r: Route): string {
   if (r.name === 'atrium') return 'KELVIN ZERO — 零度美术馆';
   if (r.name === 'index') return 'INDEX — KELVIN ZERO 零度美术馆';
-  return `KELVIN ZERO — 00${r.id}`;
+  const names: Record<string, string> = {
+    '1': 'TURING / 图灵', '2': 'MERCURY / 水银', '3': 'CURL / 旋度',
+    '4': 'LATTICE / 晶格', '5': 'ECHO / 回声', '6': 'HORIZON / 事件视界',
+  };
+  return `KELVIN ZERO — 00${r.id} ${names[r.id] ?? ''}`;
 }
 
 export class Router {

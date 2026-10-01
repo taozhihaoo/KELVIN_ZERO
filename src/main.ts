@@ -214,6 +214,15 @@ function boot() {
     return roomByKey(currentKey)?.droneHz ?? 110;
   }
 
+  // test/automation hook (also handy in console)
+  (window as any).__kz = {
+    mgr,
+    clock,
+    advance(n: number, step = 1 / 60) {
+      for (let i = 0; i < n; i++) mgr.update(clock.t += step, step);
+    },
+  };
+
   window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     post.resize(window.innerWidth, window.innerHeight);
@@ -241,6 +250,11 @@ function boot() {
 (window as any).__kzErrors = [];
 window.addEventListener('error', (e) => (window as any).__kzErrors.push('' + (e.message || e.error)));
 window.addEventListener('unhandledrejection', (e) => (window as any).__kzErrors.push('' + (e.reason)));
+const _origErr = console.error.bind(console);
+console.error = (...a: any[]) => {
+  (window as any).__kzErrors.push(a.map((x) => (typeof x === 'string' ? x : String(x?.message || x))).join(' ').slice(0, 300));
+  _origErr(...a);
+};
 
 if (!hasWebGL2()) {
   showFallback();

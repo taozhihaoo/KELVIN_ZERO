@@ -16,6 +16,7 @@ import { Panel } from './ui/panel';
 import { Manifesto } from './ui/manifesto';
 import { initMarquee } from './ui/marquee';
 import { initCursor, cursor } from './ui/cursor';
+import { registry } from './ui/registry';
 import { createAtrium } from './rooms/atrium';
 import { createTuring } from './rooms/turing';
 import { createMercury } from './rooms/mercury';
@@ -35,6 +36,7 @@ function boot() {
   const perf = new Perf();
   const audio = new AudioEngine();
   const panel = new Panel();
+  registry.panel = panel;
 
   const ctx: Ctx = { renderer, input, clock, perf, audio };
   const mgr = new SceneManager(ctx);

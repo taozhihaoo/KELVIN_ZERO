@@ -23,6 +23,7 @@ export interface Room {
   render(r: THREE.WebGLRenderer, target: THREE.WebGLRenderTarget | null): void;
   resize(w: number, h: number): void;
   thumb?: THREE.WebGLRenderTarget;
+  bloom?: BloomSettings;
   dispose(): void;
 }
 

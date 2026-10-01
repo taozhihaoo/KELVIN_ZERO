@@ -24,6 +24,7 @@ export class HUD {
   private hint: HTMLElement;
   private soundBtn: HTMLElement;
   private zeroBtn: HTMLElement;
+  private indexBtn: HTMLElement;
   private manifestoBtn: HTMLElement;
   private shownTemp = ATRIUM_TEMP_K;
   private zeroActive = false;
@@ -39,6 +40,7 @@ export class HUD {
     this.hint = document.getElementById('hint-overlay')!;
     this.soundBtn = document.getElementById('btn-sound')!;
     this.zeroBtn = document.getElementById('btn-zero')!;
+    this.indexBtn = document.getElementById('btn-index')!;
     this.manifestoBtn = document.getElementById('btn-manifesto')!;
 
     (document.getElementById('btn-index') as HTMLElement).addEventListener('click', deps.onIndex);
@@ -97,6 +99,11 @@ export class HUD {
   setSound(on: boolean) {
     this.soundBtn.textContent = on ? 'SOUND ON' : 'SOUND OFF';
     this.soundBtn.classList.toggle('active', on);
+  }
+
+  /** persistent highlight while the index page is the current route */
+  setIndexActive(on: boolean) {
+    this.indexBtn.classList.toggle('active', on);
   }
 
   // ----------------------------------------------------------- info block --

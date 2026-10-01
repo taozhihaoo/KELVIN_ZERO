@@ -123,6 +123,7 @@ function boot() {
     currentKey = key;
     const meta = roomByKey(key) ?? null;
     hud.setRoute(route, meta);
+    hud.setIndexActive(route.name === 'index');
     hud.hideInfoBlock();
     panel.clear();
     document.title = routeTitle(route);
@@ -217,8 +218,10 @@ function boot() {
     loaderVisible = false;
     loader.hide();
     if (choice === 'gallery') {
-      audio.enable().then(() => audio.setDrone(currentDrone()));
-      hud.setSound(true);
+      audio.enable().then(() => {
+        audio.setDrone(currentDrone());
+        hud.setSound(audio.enabled);
+      });
     }
     mgr.enterImmediate(routeKey(router.current()));
     router.start();

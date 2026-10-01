@@ -29,6 +29,9 @@ import { roomByKey } from './config/rooms';
 
 const canvas = document.getElementById('gl') as HTMLCanvasElement;
 
+// router is created inside boot(); rooms reach it through the registry
+const routerShim = { go(hash: string) { location.hash = hash; } };
+
 function boot() {
   const renderer = createRenderer(canvas);
   const clock = new Clock();
@@ -40,6 +43,10 @@ function boot() {
 
   const ctx: Ctx = { renderer, input, clock, perf, audio };
   const mgr = new SceneManager(ctx);
+  registry.mgr = mgr;
+  registry.router = routerShim;
+  registry.blip = () => audio.blip();
+  registry.cursorHot = (label) => cursor.current?.setHot(!!label, label);
   const post = new Post(renderer, mgr, window.innerWidth, window.innerHeight);
 
   const rooms: Room[] = [
@@ -139,8 +146,7 @@ function boot() {
       hud.hideInfoBlock();
     }
     if (key === 'atrium') hud.showHint('DRAG · WHEEL · ← →', 3);
-    (window as any).__roomSettled?.(key);
-  }
+    (window as any).__roomSettled?.(key);  }
   let lastSettled = '';
 
   // ------------------------------------------------------ absolute zero ----
@@ -160,6 +166,11 @@ function boot() {
   input.on('key', ({ code, event }: any) => {
     if (code === 'ArrowLeft' || code === 'ArrowRight') {
       event?.preventDefault();
+      // the atrium carousel consumes the arrows while it is current
+      if (currentKey === 'atrium' && registry.arrowHandler) {
+        registry.arrowHandler(code === 'ArrowRight' ? 1 : -1);
+        return;
+      }
       const cur = router.current();
       let n = cur.name === 'room' ? parseInt(cur.id, 10) : 0;
       n = code === 'ArrowRight' ? n + 1 : n - 1;

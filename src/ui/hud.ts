@@ -136,11 +136,19 @@ export class HUD {
 
   // ---------------------------------------------------------------- hints --
 
+  showAtriumSelection(meta: RoomMeta) {
+    this.showHint(
+      `00${meta.id} ${meta.nameEn} / ${meta.nameZh} — ${meta.tempLabel} — ${meta.lineEn} — ${COPY.hud.enterHint}`,
+      Infinity,
+    );
+  }
+
   showHint(text: string, seconds: number) {
     this.hint.textContent = text;
     this.hint.hidden = false;
     gsap.fromTo(this.hint, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5 });
     window.clearTimeout((this as any)._hintTimer);
+    if (!isFinite(seconds)) return;
     (this as any)._hintTimer = window.setTimeout(() => {
       gsap.to(this.hint, { opacity: 0, duration: 0.5, onComplete: () => { this.hint.hidden = true; } });
     }, seconds * 1000);

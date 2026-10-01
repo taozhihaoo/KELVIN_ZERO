@@ -9,6 +9,7 @@ export class Input {
   dragDX = 0; dragDY = 0;
   wheelDelta = 0;
   isTouch = false;
+  hasMoved = false;
   lastClick = { ux: 0.5, uy: 0.5, t: -99 }; // uv coords (0..1, y up)
 
   private handlers = new Map<string, Set<Handler>>();
@@ -42,6 +43,7 @@ export class Input {
   }
 
   private onMove = (e: PointerEvent) => {
+    this.hasMoved = true;
     const nx = (e.clientX / window.innerWidth) * 2 - 1;
     const ny = -((e.clientY / window.innerHeight) * 2 - 1);
     if (this.down) {

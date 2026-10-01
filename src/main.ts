@@ -62,6 +62,7 @@ function boot() {
     onZero: () => toggleZero(),
   });
   const manifesto = new Manifesto(() => manifesto.close());
+  registry.hud = hud;
   (document.getElementById('btn-manifesto') as HTMLElement)
     .addEventListener('click', () => manifesto.open());
 
@@ -130,7 +131,10 @@ function boot() {
     lastSettled = key;
     const meta = roomByKey(key);
     if (meta) {
-      hud.showInfoBlock(meta, meta.countLabel || undefined);
+      const count = key === 'r3'
+        ? `${(perf.params.curlN * perf.params.curlN).toLocaleString('en-US')} PARTICLES`
+        : meta.countLabel || undefined;
+      hud.showInfoBlock(meta, count);
     } else {
       hud.hideInfoBlock();
     }

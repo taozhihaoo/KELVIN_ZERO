@@ -26,8 +26,15 @@ void main(){
     if(p.y*pn.y<0.){
       float tt=p.y/(p.y-pn.y); vec3 q=mix(p,pn,tt); float rr=length(q.xz);
       if(rr>rIn&&rr<rOut){
-        float ang=atan(q.z,q.x);
-        float n=fbm2(vec2(rr*5., ang*3.+uTime*(1.4/sqrt(rr))));
+        // seamless differentially-rotating turbulence: rotate sample position by
+        // (time / sqrt(r)) instead of feeding atan() into the noise (atan has a
+        // branch cut that used to show as a hard radial seam on the disk)
+        float rrn=rr/rs;
+        float sp=uTime*(1.4/sqrt(rrn));
+        float c1=cos(sp), s1=sin(sp), c2=cos(sp*1.9), s2=sin(sp*1.9);
+        vec2 q1=mat2(c1,s1,-s1,c1)*q.xz;
+        vec2 q2=mat2(c2,s2,-s2,c2)*q.xz;
+        float n=fbm2(q1*(3.2/rs))*.65+fbm2(q2*(5.5/rs))*.35;
         float dens=smoothstep(rIn,rIn+.3,rr)*smoothstep(rOut,rIn+.8,rr)*(.35+.9*n);
         vec3 vel=normalize(vec3(-q.z,0.,q.x));
         float dop=1.+.65*dot(vel,-v);

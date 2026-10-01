@@ -19,6 +19,7 @@ export class SceneManager {
   private toRoom: Room | null = null;
 
   onSettled: ((id: string) => void) | null = null;   // transition finished, room fully in
+  onTransitionStart: ((from: string, to: string) => void) | null = null;
   onBloom: ((b: BloomSettings) => void) | null = null;
 
   constructor(private ctx: Ctx) {
@@ -56,6 +57,7 @@ export class SceneManager {
     this.fromRoom = from;
     this.toRoom = to;
     this.transition.origin.set(origin.x, origin.y);
+    this.onTransitionStart?.(from.id, id);
     to.enter(); // target starts living under the frost immediately
     this.onBloom?.((to as any).bloom ?? DEFAULT_BLOOM);
 

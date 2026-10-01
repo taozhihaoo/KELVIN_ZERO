@@ -12,6 +12,7 @@
   --hud-h: 40px;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { height: 100%; }
 html { cursor: none; }
 body {
@@ -92,7 +93,7 @@ body {
   background: repeating-linear-gradient(0deg, rgba(255,255,255,0.022) 0 1px, transparent 1px 3px);
 }
 #fx-grain {
-  position: fixed; inset: -60px; z-index: 91; pointer-events: none; opacity: 0.05;
+  position: fixed; inset: -60px; z-index: 91; pointer-events: none; opacity: 0.028;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
   animation: grain 0.9s steps(3) infinite;
 }
